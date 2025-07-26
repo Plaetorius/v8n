@@ -41,7 +41,7 @@ export async function createProject(projectData: CreateProjectData): Promise<Pro
   console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
   
   // Test the connection first
-  const { data: testData, error: testError } = await supabase
+  const { error: testError } = await supabase
     .from('projects')
     .select('count')
     .limit(1);

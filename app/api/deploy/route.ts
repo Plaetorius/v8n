@@ -29,10 +29,10 @@ export async function POST(req: NextRequest) {
         logs: result.logs
       }, { status: 500 });
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json({ 
-      error: err.message,
-      logs: [`❌ Unexpected error: ${err.message}`]
+      error: err instanceof Error ? err.message : 'Unknown error',
+              logs: [`❌ Unexpected error: ${err instanceof Error ? err.message : 'Unknown error'}`]
     }, { status: 500 });
   }
 } 

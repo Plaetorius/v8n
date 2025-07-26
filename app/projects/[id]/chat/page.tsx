@@ -13,29 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, Bot, User, Settings, Webhook, Mail, Edit, Plus, Upload, FileJson, Rocket, Save, FileText, Settings as Gear } from "lucide-react";
+import { ArrowLeft, Send, Bot, User, Settings, Webhook, Mail, Plus, Upload, FileJson, Rocket, Save, FileText, Settings as Gear } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { N8nFlow, N8nNode, validateN8nFlow, createFlowManager } from "@/lib/n8n-utils";
+import { N8nFlow, N8nNode, validateN8nFlow } from "@/lib/n8n-utils";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from "sonner";
 import { DeploymentLog } from "@/components/ui/deployment-log";
 import ReactMarkdown from 'react-markdown';
 
-// Mock project data
-const mockProjects = {
-  "1": {
-    id: "1",
-    name: "AI Chat Assistant",
-  },
-  "2": {
-    id: "2", 
-    name: "Data Visualization Dashboard",
-  },
-};
+// Mock project data - removed unused variable
 
 // Initial empty messages array
-const initialMessages: any[] = [];
+const initialMessages: Array<{ id: string; type: string; content: string; timestamp: string }> = [];
 
 // Mock n8n flow data
 const mockFlow: N8nFlow = {
@@ -108,7 +98,14 @@ export default function ChatPage() {
   const [deploymentResult, setDeploymentResult] = useState<{
     success: boolean;
     logs: string[];
-    details?: any;
+    details?: {
+      flowName: string;
+      nodeCount: number;
+      connectionCount: number;
+      authMethod: string;
+      n8nStatus: boolean;
+      workflowId?: string;
+    };
   } | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
@@ -123,7 +120,7 @@ export default function ChatPage() {
   const [project, setProject] = useState<{
     id: string;
     name: string;
-    workflow_json?: any;
+    workflow_json?: N8nFlow;
   }>({
     id: projectId,
     name: "Project " + projectId,
@@ -245,20 +242,31 @@ export default function ChatPage() {
 
 
 
-  const normalizeImportedFlow = (flow: any): N8nFlow => {
-    // Ensure all nodes have unique IDs
-    const normalizedNodes = flow.nodes.map((node: any) => ({
-      ...node,
-      id: node.id || uuidv4(), // Use existing ID or generate new one
-    }));
+  const normalizeImportedFlow = (flow: unknown): N8nFlow => {
+    const flowData = flow as Record<string, unknown>;
+    // Ensure all nodes have unique IDs and proper structure
+    const normalizedNodes = ((flowData.nodes as unknown[]) || []).map((node: unknown) => {
+      const nodeData = node as Record<string, unknown>;
+      return {
+        id: (nodeData.id as string) || uuidv4(),
+        parameters: (nodeData.parameters as Record<string, string | number | boolean>) || {},
+        name: (nodeData.name as string) || 'Unnamed Node',
+        type: (nodeData.type as string) || 'n8n-nodes-base.stub',
+        typeVersion: (nodeData.typeVersion as number) || 1,
+        position: (nodeData.position as [number, number]) || [0, 0],
+        credentials: (nodeData.credentials as Record<string, unknown>) || {},
+      } as N8nNode;
+    });
     
     return {
-      ...flow,
+      name: (flowData.name as string) || 'Imported Flow',
       nodes: normalizedNodes,
-    };
+      connections: (flowData.connections as Record<string, { main: Array<Array<{ node: string; type: string; index: number }>> }>) || {},
+      active: (flowData.active as boolean) || false,
+    } as N8nFlow;
   };
 
-  const generateFollowUpQuestions = (workflow: N8nFlow, userMessage: string): string => {
+  const generateFollowUpQuestions = (workflow: N8nFlow): string => {
     const nodeTypes = workflow.nodes.map(node => node.type);
     const hasWebhook = nodeTypes.some(type => type.includes('webhook'));
     const hasEmail = nodeTypes.some(type => type.includes('email'));
@@ -308,7 +316,7 @@ export default function ChatPage() {
 
   const ensureWorkflowConnections = (flow: N8nFlow): N8nFlow => {
     // Ensure all nodes have proper connections
-    const validatedConnections: any = {};
+    const validatedConnections: Record<string, { main: Array<Array<{ node: string; type: string; index: number }>> }> = {};
     
     // Preserve existing connections if they're valid
     if (flow.connections) {
@@ -372,7 +380,7 @@ export default function ChatPage() {
           setUploadSuccess(`Successfully loaded flow: ${normalizedFlow.name}`);
           
           // Add a bot message about the upload with follow-up questions
-          const followUpQuestions = generateFollowUpQuestions(normalizedFlow, "uploaded workflow");
+          const followUpQuestions = generateFollowUpQuestions(normalizedFlow);
           const uploadMessage = {
             id: uuidv4(),
             type: "bot" as const,
@@ -400,7 +408,7 @@ export default function ChatPage() {
         setUploadSuccess(`Successfully loaded flow: ${normalizedFlow.name}`);
         
         // Add a bot message about the upload with follow-up questions
-        const followUpQuestions = generateFollowUpQuestions(normalizedFlow, "pasted workflow");
+        const followUpQuestions = generateFollowUpQuestions(normalizedFlow);
         const uploadMessage = {
           id: uuidv4(),
           type: "bot" as const,
@@ -495,10 +503,10 @@ export default function ChatPage() {
           };
           setMessages(prev => [...prev, botResponse]);
         }
-          } catch (err: any) {
-        const errorMessage = err.name === 'AbortError' 
+          } catch (err: unknown) {
+        const errorMessage = err instanceof Error && err.name === 'AbortError' 
           ? 'Request timed out. Please try again.' 
-          : err.message || 'An unexpected error occurred.';
+          : (err instanceof Error ? err.message : 'An unexpected error occurred.');
         
         setAiError(errorMessage);
         const botResponse = {
@@ -513,6 +521,7 @@ export default function ChatPage() {
     }
   };
 
+  /*
   const processAIRequest = (userMessage: string): string => {
     const flowManager = createFlowManager(flow);
     const lowerMessage = userMessage.toLowerCase();
@@ -563,6 +572,7 @@ export default function ChatPage() {
     // Default response
     return "I understand your request. I can help you modify your n8n flow. Try asking me to 'add webhook', 'add email', 'rename flow', 'list nodes', or 'validate flow'.";
   };
+  */
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -594,10 +604,12 @@ export default function ChatPage() {
     setIsDragging(false);
   };
 
+  /*
   const handleNodeClick = (node: N8nNode) => {
     setSelectedNode(node);
     setIsNodeDialogOpen(true);
   };
+  */
 
   const handleNodeUpdate = (updatedNode: N8nNode) => {
     setFlow(prev => ({
@@ -693,7 +705,13 @@ export default function ChatPage() {
               '❌ Failed to save workflow to database'
             ],
             details: {
-              ...data.details,
+              ...(data.details as {
+                flowName: string;
+                nodeCount: number;
+                connectionCount: number;
+                authMethod: string;
+                n8nStatus: boolean;
+              }),
               workflowId: data.workflowId
             }
           });
@@ -708,7 +726,13 @@ export default function ChatPage() {
             '✅ Workflow saved to database successfully'
           ],
           details: {
-            ...data.details,
+            ...(data.details as {
+              flowName: string;
+              nodeCount: number;
+              connectionCount: number;
+              authMethod: string;
+              n8nStatus: boolean;
+            }),
             workflowId: data.workflowId
           }
         });
@@ -717,14 +741,21 @@ export default function ChatPage() {
         setDeploymentResult({
           success: false,
           logs: data.logs || [],
-          details: data.details
+          details: data.details as {
+            flowName: string;
+            nodeCount: number;
+            connectionCount: number;
+            authMethod: string;
+            n8nStatus: boolean;
+            workflowId?: string;
+          }
         });
       }
-    } catch (err: any) {
-      toast.error("Deployment error: " + err.message);
+    } catch (err: unknown) {
+      toast.error("Deployment error: " + (err instanceof Error ? err.message : 'Unknown error'));
       setDeploymentResult({
         success: false,
-        logs: [`❌ Network error: ${err.message}`]
+        logs: [`❌ Network error: ${err instanceof Error ? err.message : 'Unknown error'}`]
       });
     } finally {
       setDeploying(false);

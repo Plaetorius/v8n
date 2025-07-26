@@ -27,7 +27,7 @@ export default function Home() {
           <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 border border-white/10 shadow-2xl">
             {/* Main Heading */}
             <h1 className="text-8xl md:text-9xl font-bold mb-8 text-white drop-shadow-lg">
-              autom8
+              v8n
             </h1>
             
             {/* Subtitle */}

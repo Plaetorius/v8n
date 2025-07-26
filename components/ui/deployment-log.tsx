@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronUp, Copy, CheckCircle, XCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronUp, Copy, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 interface DeploymentLogProps {
@@ -30,7 +30,7 @@ export function DeploymentLog({ logs, success, details, onClose }: DeploymentLog
       setCopied(true);
       toast.success("Logs copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+    } catch {
       toast.error("Failed to copy logs");
     }
   };

@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, MessageSquare, Settings, Calendar, Rocket, Edit, Save } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { DeploymentLog } from "@/components/ui/deployment-log";
 import { Project } from "@/lib/types";
@@ -71,11 +71,7 @@ export default function ProjectPage() {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
 
-  useEffect(() => {
-    fetchProject();
-  }, [projectId]);
-
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     try {
       const response = await fetch(`/api/projects/${projectId}`);
       if (response.ok) {
@@ -92,7 +88,11 @@ export default function ProjectPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
 
   const handleSaveProject = async () => {
     if (!project) return;
@@ -125,7 +125,14 @@ export default function ProjectPage() {
   const [deploymentResult, setDeploymentResult] = useState<{
     success: boolean;
     logs: string[];
-    details?: any;
+    details?: {
+      flowName: string;
+      nodeCount: number;
+      connectionCount: number;
+      authMethod: string;
+      n8nStatus: boolean;
+      workflowId?: string;
+    };
   } | null>(null);
   const handleDeploy = async () => {
     setDeploying(true);
@@ -143,21 +150,35 @@ export default function ProjectPage() {
         setDeploymentResult({
           success: true,
           logs: data.logs || [],
-          details: data.details
+          details: data.details as {
+            flowName: string;
+            nodeCount: number;
+            connectionCount: number;
+            authMethod: string;
+            n8nStatus: boolean;
+            workflowId?: string;
+          }
         });
       } else {
         toast.error(data.error || "Deployment failed");
         setDeploymentResult({
           success: false,
           logs: data.logs || [],
-          details: data.details
+          details: data.details as {
+            flowName: string;
+            nodeCount: number;
+            connectionCount: number;
+            authMethod: string;
+            n8nStatus: boolean;
+            workflowId?: string;
+          }
         });
       }
-    } catch (err: any) {
-      toast.error("Deployment error: " + err.message);
+    } catch (err: unknown) {
+      toast.error("Deployment error: " + (err instanceof Error ? err.message : 'Unknown error'));
       setDeploymentResult({
         success: false,
-        logs: [`❌ Network error: ${err.message}`]
+        logs: [`❌ Network error: ${err instanceof Error ? err.message : 'Unknown error'}`]
       });
     } finally {
       setDeploying(false);

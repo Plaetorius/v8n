@@ -6,9 +6,9 @@ const N8N_PASS = process.env.N8N_PASS || '';
 
 export interface N8nFlow {
   name: string;
-  nodes: any[];
-  connections: Record<string, any>;
-  settings?: Record<string, any>;
+  nodes: unknown[];
+  connections: Record<string, unknown>;
+  settings?: Record<string, unknown>;
   active?: boolean;
 }
 
@@ -40,17 +40,18 @@ function getAuthHeaders(): Record<string, string> {
   return headers;
 }
 
-export function validateFlow(flow: any): { isValid: boolean; errors: string[] } {
+export function validateFlow(flow: unknown): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   const requiredFields = ['name', 'nodes', 'connections'];
   
+  const flowData = flow as Record<string, unknown>;
   for (const field of requiredFields) {
-    if (!flow[field]) {
+    if (!flowData[field]) {
       errors.push(`Missing required field: ${field}`);
     }
   }
 
-  if (!Array.isArray(flow.nodes) || flow.nodes.length === 0) {
+  if (!Array.isArray(flowData.nodes) || flowData.nodes.length === 0) {
     errors.push('Flow must have at least one node');
   }
 
@@ -172,11 +173,11 @@ export async function deployToN8n(flow: N8nFlow): Promise<DeployResult> {
       };
     }
 
-  } catch (error: any) {
-    logs.push(`❌ Network Error: ${error.message}`);
+  } catch (error: unknown) {
+    logs.push(`❌ Network Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     return {
       success: false,
-      message: `Network Error: ${error.message}`,
+      message: `Network Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       error: 'network_error',
       logs
     };

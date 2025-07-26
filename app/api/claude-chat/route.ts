@@ -28,7 +28,7 @@ Current workflow JSON:
 ${JSON.stringify(workflow_json, null, 2)}
 
 Full conversation history:
-${messages.map((msg: any) => `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.content}`).join('\n')}
+${messages.map((msg: { type: string; content: string }) => `${msg.type === 'user' ? 'User' : 'Assistant'}: ${msg.content}`).join('\n')}
 
 Please respond with a conversational explanation (in Markdown) followed by the updated workflow JSON.`;
 
@@ -89,7 +89,7 @@ Please respond with a conversational explanation (in Markdown) followed by the u
       // First, try to parse as pure JSON
       updatedWorkflow = JSON.parse(data.content[0].text);
       conversationMessage = 'I\'ve updated your workflow as requested.';
-    } catch (e) {
+    } catch {
       // If not pure JSON, try to extract JSON from the response
       const responseText = data.content[0].text;
       
