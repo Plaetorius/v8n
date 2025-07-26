@@ -40,9 +40,14 @@ function AuthPage() {
     setError(null);
 
     try {
-      const redirectUrl = process.env.NODE_ENV === 'production' 
-        ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
-        : `${window.location.origin}/auth/callback`;
+      // Determine the correct redirect URL
+      let redirectUrl;
+      if (process.env.NODE_ENV === 'production') {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://v8n-beta.vercel.app';
+        redirectUrl = `${siteUrl}/auth/callback`;
+      } else {
+        redirectUrl = `${window.location.origin}/auth/callback`;
+      }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
