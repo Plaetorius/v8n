@@ -1,0 +1,50 @@
+{
+  "name": "Webhook → Send Email",
+  "nodes": [
+    {
+      "id": "webhook-1",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "welcome-user",
+        "responseMode": "onReceived"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "id": "email-1",
+      "parameters": {
+        "fromEmail": "your@email.com",
+        "toEmail": "={{$json[\"email\"]}}",
+        "subject": "Welcome to our app!",
+        "text": "Hi {{$json[\"name\"]}},\n\nThanks for signing up. We're excited to have you!"
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "credentials": {
+        "smtp": {
+          "id": "your-smtp-credential-id",
+          "name": "Your SMTP Credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false
+} 

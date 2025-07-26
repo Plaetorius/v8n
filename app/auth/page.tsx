@@ -49,15 +49,27 @@ function AuthPage() {
         redirectUrl = `${window.location.origin}/auth/callback`;
       }
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log('🔐 Starting GitHub OAuth login...');
+      console.log('📍 Redirect URL:', redirectUrl);
+      console.log('🌍 Environment:', process.env.NODE_ENV);
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
           redirectTo: redirectUrl
         }
       });
       
-      if (error) throw error;
+      console.log('📦 OAuth response data:', data);
+      
+      if (error) {
+        console.error('❌ OAuth error:', error);
+        throw error;
+      }
+      
+      console.log('✅ OAuth request initiated successfully');
     } catch (error: unknown) {
+      console.error('💥 GitHub login error:', error);
       setError(error instanceof Error ? error.message : "An error occurred");
       setIsLoading(false);
     }

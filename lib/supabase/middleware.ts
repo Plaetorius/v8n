@@ -44,14 +44,24 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: If you remove getClaims() and you use server-side rendering
   // with the Supabase client, your users may be randomly logged out.
-  const { data } = await supabase.auth.getClaims();
+  const { data, error: claimsError } = await supabase.auth.getClaims();
   const user = data?.claims;
+
+  console.log('🛡️ Middleware check for:', request.nextUrl.pathname);
+  console.log('👤 User claims:', user ? 'Present' : 'None');
+  console.log('❓ Claims error:', claimsError);
+  console.log('🔒 User ID:', user?.sub);
 
   // Protect /projects route - redirect to /auth if not authenticated
   if (request.nextUrl.pathname === "/projects" && !user) {
+    console.log('🚫 Access denied to /projects - redirecting to /auth');
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     return NextResponse.redirect(url);
+  }
+
+  if (user) {
+    console.log('✅ User authenticated, allowing access');
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

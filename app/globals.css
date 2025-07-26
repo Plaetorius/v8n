@@ -37,6 +37,15 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Success and Error states with proper contrast */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --success-background: 142 76% 95%;
+    --success-border: 142 76% 85%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 98%;
+    --error-background: 0 84% 95%;
+    --error-border: 0 84% 85%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -71,6 +80,15 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Success and Error states for dark mode with proper contrast */
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 98%;
+    --success-background: 142 76% 15%;
+    --success-border: 142 76% 25%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 98%;
+    --error-background: 0 84% 15%;
+    --error-border: 0 84% 25%;
   }
 }
 
@@ -80,5 +98,44 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-success {
+    color: hsl(var(--success));
+  }
+  .text-success-foreground {
+    color: hsl(var(--success-foreground));
+  }
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  .bg-success-background {
+    background-color: hsl(var(--success-background));
+  }
+  .border-success {
+    border-color: hsl(var(--success));
+  }
+  .border-success-border {
+    border-color: hsl(var(--success-border));
+  }
+  .text-error {
+    color: hsl(var(--error));
+  }
+  .text-error-foreground {
+    color: hsl(var(--error-foreground));
+  }
+  .bg-error {
+    background-color: hsl(var(--error));
+  }
+  .bg-error-background {
+    background-color: hsl(var(--error-background));
+  }
+  .border-error {
+    border-color: hsl(var(--error));
+  }
+  .border-error-border {
+    border-color: hsl(var(--error-border));
   }
 }
