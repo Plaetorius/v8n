@@ -212,9 +212,11 @@ const Autom8LandingPage: React.FC = () => {
               <span>GitHub</span>
             </Button>
               </Link>
+              <Link href="/auth">
             <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-lg">
               Get Started
             </Button>
+            </Link>
 
             <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
