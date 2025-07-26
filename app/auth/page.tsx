@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,15 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Github } from "lucide-react";
 
-export default function AuthPage() {
+export default function AuthPageWrapper() {
+  return (
+    <Suspense>
+      <AuthPage />
+    </Suspense>
+  );
+}
+
+function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
