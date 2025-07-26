@@ -40,10 +40,14 @@ function AuthPage() {
     setError(null);
 
     try {
+      const redirectUrl = process.env.NODE_ENV === 'production' 
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`
+        : `${window.location.origin}/auth/callback`;
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: redirectUrl
         }
       });
       
