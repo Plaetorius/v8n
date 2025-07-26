@@ -1,23 +1,56 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Dither from "@/components/backgrounds/Dither/Dither";
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold">Welcome to v8n</h1>
-        <p className="text-lg text-muted-foreground">
-          Build AI-powered projects with natural language
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Button asChild size="lg">
-            <Link href="/projects">View Projects</Link>
-          </Button>
-          <Button variant="outline" asChild size="lg">
-            <Link href="/auth">Sign In</Link>
-          </Button>
-        </div>
+    <main className="min-h-screen relative">
+      {/* Dither Background */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <Dither 
+          waveSpeed={0.02}
+          waveFrequency={2}
+          waveAmplitude={0.2}
+          waveColor={[0.1, 0.1, 0.1]}
+          colorNum={2}
+          pixelSize={3}
+          disableAnimation={false}
+          enableMouseInteraction={false}
+        />
       </div>
+      
+      {/* Hero Section - Full Screen */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Glassmorphism Card */}
+        <div className="relative z-10 text-center px-8 py-12 max-w-4xl mx-auto">
+          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 border border-white/10 shadow-2xl">
+            {/* Main Heading */}
+            <h1 className="text-8xl md:text-9xl font-bold mb-8 text-white drop-shadow-lg">
+              autom8
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+              Build AI-powered applications with natural language.
+            </p>
+
+            {/* CTA Button */}
+            <div className="flex justify-center items-center">
+              <Button 
+                size="lg" 
+                className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg font-medium shadow-xl border-2 border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                asChild
+              >
+                <Link href="/projects" className="flex items-center gap-2" aria-label="Get started with autom8 projects">
+                  Get Started
+                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
