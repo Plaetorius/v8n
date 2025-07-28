@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import Dither from "@/components/backgrounds/Dither/Dither";
 import { PreRegisterForm } from "@/components/ui/pre-register-form";
 

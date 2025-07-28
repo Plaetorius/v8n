@@ -68,7 +68,7 @@ export function PreRegisterForm() {
           Welcome aboard!
         </h3>
         <p className="text-gray-200 leading-relaxed">
-          You're now on our exclusive early access list. We'll notify you as soon as v8n is ready.
+          You&apos;re now on our exclusive early access list. We&apos;ll notify you as soon as v8n is ready.
         </p>
       </div>
     );
