@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createServiceClient } from '@/lib/supabase/server';
 import { Project, CreateProjectData, UpdateProjectData, PreRegistration, CreatePreRegistrationData } from './types';
 
 export async function getProjects(): Promise<Project[]> {
@@ -113,7 +113,21 @@ export async function deleteProject(id: string): Promise<void> {
 
 // Pre-registration functions
 export async function createPreRegistration(data: CreatePreRegistrationData): Promise<PreRegistration> {
-  const supabase = await createClient();
+  const supabase = await createServiceClient(); // Use service role client
+  
+  console.log('Creating pre-registration with data:', data);
+  console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+  
+  // Test the connection first
+  const { error: testError } = await supabase
+    .from('pre_registrations')
+    .select('count')
+    .limit(1);
+  
+  if (testError) {
+    console.error('Connection test failed:', testError);
+    throw new Error(`Database connection failed: ${testError.message}`);
+  }
   
   const { data: preReg, error } = await supabase
     .from('pre_registrations')
@@ -126,10 +140,16 @@ export async function createPreRegistration(data: CreatePreRegistrationData): Pr
     .single();
   
   if (error) {
-    console.error('Error creating pre-registration:', error);
-    throw new Error('Failed to create pre-registration');
+    console.error('Supabase error details:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint
+    });
+    throw new Error(`Failed to create pre-registration: ${error.message}`);
   }
   
+  console.log('Pre-registration created successfully:', preReg);
   return preReg;
 }
 
