@@ -24,4 +24,21 @@ export interface UpdateProjectData {
   prompt?: string;
   status?: 'draft' | 'deployed' | 'archived';
   deployed_webhook_url?: string;
+}
+
+export interface PreRegistration {
+  id: string;
+  email: string;
+  name?: string;
+  company?: string;
+  use_case?: string;
+  created_at: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface CreatePreRegistrationData {
+  email: string;
+  name?: string;
+  company?: string;
+  use_case?: string;
 } 

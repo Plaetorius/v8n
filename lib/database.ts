@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { Project, CreateProjectData, UpdateProjectData } from './types';
+import { Project, CreateProjectData, UpdateProjectData, PreRegistration, CreatePreRegistrationData } from './types';
 
 export async function getProjects(): Promise<Project[]> {
   const supabase = await createClient();
@@ -109,4 +109,42 @@ export async function deleteProject(id: string): Promise<void> {
     console.error('Error deleting project:', error);
     throw new Error('Failed to delete project');
   }
+}
+
+// Pre-registration functions
+export async function createPreRegistration(data: CreatePreRegistrationData): Promise<PreRegistration> {
+  const supabase = await createClient();
+  
+  const { data: preReg, error } = await supabase
+    .from('pre_registrations')
+    .insert({
+      ...data,
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating pre-registration:', error);
+    throw new Error('Failed to create pre-registration');
+  }
+  
+  return preReg;
+}
+
+export async function getPreRegistrations(): Promise<PreRegistration[]> {
+  const supabase = await createClient();
+  
+  const { data, error } = await supabase
+    .from('pre_registrations')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching pre-registrations:', error);
+    throw new Error('Failed to fetch pre-registrations');
+  }
+  
+  return data || [];
 } 
