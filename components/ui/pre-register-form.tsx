@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Loader2, Sparkles } from 'lucide-react';
 
 interface PreRegisterFormData {
   email: string;
@@ -61,49 +60,56 @@ export function PreRegisterForm() {
 
   if (isSuccess) {
     return (
-      <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
-        <CardContent className="p-6 text-center">
-          <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">
-            Thank you for pre-registering!
-          </h3>
-          <p className="text-gray-300">
-            We&apos;ll notify you when v8n is ready for early access.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 text-center">
+        <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mx-auto mb-6">
+          <CheckCircle className="w-8 h-8 text-green-400" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-4">
+          Welcome aboard!
+        </h3>
+        <p className="text-gray-200 leading-relaxed">
+          You're now on our exclusive early access list. We'll notify you as soon as v8n is ready.
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-white">
-          Get Early Access
-        </CardTitle>
-        <CardDescription className="text-gray-300">
-          Be among the first to experience AI-powered application building
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">
-              Email *
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-              placeholder="your@email.com"
-            />
+    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8">
+      {/* Form Header */}
+      <div className="mb-8">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="flex items-center justify-center w-10 h-10 bg-white/10 rounded-lg">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
+          <h3 className="text-2xl font-bold text-white">
+            Get Early Access
+          </h3>
+        </div>
+        <p className="text-gray-300 text-sm leading-relaxed">
+          Join our exclusive community of early adopters and help shape the future of AI development.
+        </p>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-white font-medium text-sm">
+            Email Address *
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-white/50 transition-all duration-300 h-12"
+            placeholder="your@email.com"
+          />
+        </div>
 
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">
+            <Label htmlFor="name" className="text-white font-medium text-sm">
               Name
             </Label>
             <Input
@@ -111,13 +117,13 @@ export function PreRegisterForm() {
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+              className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-white/50 transition-all duration-300 h-12"
               placeholder="Your name"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="company" className="text-white">
+            <Label htmlFor="company" className="text-white font-medium text-sm">
               Company
             </Label>
             <Input
@@ -125,47 +131,49 @@ export function PreRegisterForm() {
               type="text"
               value={formData.company}
               onChange={(e) => handleInputChange('company', e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+              className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-white/50 transition-all duration-300 h-12"
               placeholder="Your company"
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="use_case" className="text-white">
-              Use Case
-            </Label>
-            <Textarea
-              id="use_case"
-              value={formData.use_case}
-              onChange={(e) => handleInputChange('use_case', e.target.value)}
-              className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 resize-none"
-              placeholder="What would you like to build with v8n?"
-              rows={3}
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="use_case" className="text-white font-medium text-sm">
+            What would you like to build?
+          </Label>
+          <Textarea
+            id="use_case"
+            value={formData.use_case}
+            onChange={(e) => handleInputChange('use_case', e.target.value)}
+            className="bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:bg-white/15 focus:border-white/50 transition-all duration-300 resize-none"
+            placeholder="Tell us about your project or use case..."
+            rows={3}
+          />
+        </div>
 
-          {error && (
-            <div className="text-red-400 text-sm text-center">
+        {error && (
+          <div className="bg-red-500/20 backdrop-blur-md rounded-lg p-4 border border-red-500/30">
+            <p className="text-red-300 text-sm">
               {error}
-            </div>
-          )}
+            </p>
+          </div>
+        )}
 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-white text-black hover:bg-gray-100 font-medium"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              'Pre-register for Early Access'
-            )}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-gradient-to-r from-white to-gray-100 text-black hover:from-gray-100 hover:to-white font-semibold py-3 h-12 transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Securing your spot...
+            </>
+          ) : (
+            'Join Early Access'
+          )}
+        </Button>
+      </form>
+    </div>
   );
 } 

@@ -21,53 +21,47 @@ export default function Home() {
         />
       </div>
       
-      {/* Hero Section - Full Screen */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Glassmorphism Card */}
-        <div className="relative z-10 text-center px-8 py-12 max-w-4xl mx-auto">
-          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-12 border border-white/10 shadow-2xl">
-            {/* Main Heading */}
-            <h1 className="text-8xl md:text-9xl font-bold mb-8 text-white drop-shadow-lg">
-              v8n
-            </h1>
+      {/* Hero Section with Asymmetric Layout */}
+      <section className="relative min-h-screen flex items-center px-8 py-12">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             
-            {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-              Build AI-powered applications with natural language.
-            </p>
+            {/* Left Column - Hero Content */}
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 space-y-8">
+              {/* Logo and Tagline */}
+              <div className="space-y-6">
+                <h1 className="text-6xl md:text-8xl font-black text-white tracking-tight leading-none">
+                  v8n
+                </h1>
+                
+                <p className="text-xl md:text-2xl text-gray-200 leading-relaxed max-w-lg">
+                  Build AI-powered applications with natural language.
+                </p>
+              </div>
 
-            {/* CTA Button */}
-            <div className="flex justify-center items-center">
-              <Button 
-                size="lg" 
-                className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg font-medium shadow-xl border-2 border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                asChild
-              >
-                <Link href="/projects" className="flex items-center gap-2" aria-label="Get started with autom8 projects">
-                  Get Started
-                  <ArrowRight className="w-5 h-5" aria-hidden="true" />
-                </Link>
-              </Button>
+              {/* Coming Soon Section */}
+              <div className="space-y-4">
+                <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-white">Coming Soon</span>
+                </div>
+                
+                <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+                  Be among the first to experience the future of AI development
+                </h2>
+                
+                <p className="text-lg text-gray-300 leading-relaxed max-w-md">
+                  Join our exclusive early access program and shape the future of AI-powered application development.
+                </p>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Pre-registration Section */}
-      <section className="relative py-20 px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-              Coming Soon
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
-              v8n is currently in development. Pre-register to be among the first to experience 
-              the future of AI-powered application building.
-            </p>
-          </div>
-          
-          <div className="flex justify-center">
-            <PreRegisterForm />
+            {/* Right Column - Form */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-md">
+                <PreRegisterForm />
+              </div>
+            </div>
           </div>
         </div>
       </section>
