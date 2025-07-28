@@ -68,7 +68,7 @@ export function PreRegisterForm() {
             Thank you for pre-registering!
           </h3>
           <p className="text-gray-300">
-            We'll notify you when v8n is ready for early access.
+            We&apos;ll notify you when v8n is ready for early access.
           </p>
         </CardContent>
       </Card>
